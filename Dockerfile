@@ -35,8 +35,8 @@ RUN echo "max_execution_time = 1200" > /usr/local/etc/php/conf.d/execution.ini \
 WORKDIR /var/www/html/
 
 # Copy composer files first for better layer caching
-COPY composer.json composer.lock* ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts
+#COPY composer.json composer.lock* ./
+#RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts
 
 # Copy package files for Node.js dependencies
 COPY package.json package-lock.json* ./

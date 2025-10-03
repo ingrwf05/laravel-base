@@ -14,6 +14,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Set tag
+      id: tag
+      run: |
+        # Use a date-based tag with short SHA (you can customize this)
+        TAG="v$(date +%Y%m%d).${{ github.run_number }}"
+        echo "TAG=$TAG" >> $GITHUB_ENV
+        echo "Using tag: $TAG"
     
     - name: Determine build type and dockerfile
       id: build-config
@@ -33,13 +41,15 @@ jobs:
         fi
         
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag git.local.skill17.com/${{ github.repository }}:latest
+      run: docker build . --file Dockerfile --tag git.startechs.xyz/${{ github.repository }}:latest --tag git.startechs.xyz/${{ github.repository }}:$TAG
       
     - name: docker login
       env:
         USER: ${{ secrets.USER }}
         PASS: ${{ secrets.PASS }}
-      run: docker login -u $USER -p $PASS git.local.skill17.com
+      run: docker login -u $USER -p $PASS git.startechs.xyz
       
-    - name: push to docker hub
-      run: docker push git.local.skill17.com/${{ github.repository }}:latest
+    - name: Push tagged image
+      run: |
+        docker push git.startechs.xyz/${{ github.repository }}:$TAG
+        docker push git.startechs.xyz/${{ github.repository }}:latest
